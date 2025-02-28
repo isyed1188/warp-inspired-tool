@@ -1,0 +1,79 @@
+# Packaging the Warp-Inspired Terminal Enhancer
+
+This document describes how to package the Warp-Inspired Terminal Enhancer for distribution on Windows, macOS, and Linux.
+
+## 1. Windows (.exe and Installer)
+
+*   **Create an Executable (.exe):**
+    *   Use **PyInstaller:**
+        1.  Install: `pip install pyinstaller`
+        2.  Create: `pyinstaller --onefile --name "WarpInspiredTool" main.py` (in the project directory)
+            *   This creates a `dist` folder with `WarpInspiredTool.exe`.
+            *   `--onefile`: Bundles everything into a single executable.
+            *   `--name`: Sets the executable name.
+            *   `main.py`: Your main script.
+            *   **Note:** Do *not* use `--windowed` or `--noconsole` as this is a terminal application.
+
+*   **Create an Installer (Optional):**
+    *   Use **Inno Setup:**
+        1.  Download and install Inno Setup from [https://jrsoftware.org/isinfo.php](https://jrsoftware.org/isinfo.php).
+        2.  Create an Inno Setup script (.iss file) - see example in INSTRUCTIONS.txt or use the Inno Setup wizard.  This script defines:
+            *   Application name and version.
+            *   Installation directory.
+            *   Files to include (your .exe).
+            *   Shortcuts to create.
+        3.  Compile the .iss file in Inno Setup to create the installer executable.
+
+## 2. macOS (.app and .dmg)
+
+*   **Create a .app Bundle:**
+    *   Use **py2app:**
+        1.  Install: `pip install py2app`
+        2.  Create a `setup.py` file (already created in this project):
+            ```python
+            # setup.py (example)
+            from setuptools import setup
+
+            APP = ['main.py']
+            DATA_FILES = []
+            OPTIONS = {
+                'argv_emulation': True,
+                'packages': ['ai_integration'],
+                'includes': ['openai', 'ollama', 'anthropic', 'openrouter', 'prompt_toolkit', 'requests'],
+            }
+
+            setup(
+                app=APP,
+                data_files=DATA_FILES,
+                options={'py2app': OPTIONS},
+                setup_requires=['py2app'],
+            )
+            ```
+        3.  Build: `python setup.py py2app` (in the project directory)
+            *   This creates a `dist` folder with `WarpInspiredTool.app`.
+
+*   **Create a .dmg Installer (Optional):**
+    *   Use **`create-dmg` (Recommended):**
+        1.  Install: `brew install create-dmg` (requires Homebrew)
+        2.  Create: `create-dmg --volname "Warp-Inspired Terminal Enhancer" dist/WarpInspiredTool.app`
+            *   You can customize the DMG with a background image, window size, and icon placement. See `create-dmg --help` for options.
+    *   **Disk Utility (Alternative):**
+        1.  Open Disk Utility.
+        2.  File > New Image > Image from Folder.
+        3.  Select `dist/WarpInspiredTool.app`.
+        4.  Choose "compressed" format.
+        5.  Save the DMG.
+
+## 3. Linux
+
+*   **Create an Executable:**
+    *   Use **PyInstaller:**
+        1. Install: `pip install pyinstaller`
+        2. Create: `pyinstaller --onefile --name "WarpInspiredTool" main.py`
+           * This creates a `dist` folder with the executable.
+
+*   **Distribution-Specific Packages (.deb, .rpm, etc.):**
+    *   This is complex and distribution-specific.
+    *   **`.deb` (Debian, Ubuntu):** Use tools like `dpkg-deb` and `dh_make`.  Requires creating control files.
+    *   **`.rpm` (Red Hat, Fedora):** Use tools like `rpmbuild`. Requires creating a .spec file.
+    *   **Recommendation:** Consider using `fpm` (Effing Package Management) to simplify creating packages for multiple Linux distributions.  `fpm` can create `.deb`, `.rpm`, and other package formats from a common configuration.

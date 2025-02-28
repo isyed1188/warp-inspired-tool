@@ -1,0 +1,6 @@
+# List of Python packages we need
+requests
+prompt_toolkit
+# ollama is optional, install if you want to use Ollama locally
+openai>=1.0.0
+anthropic>=0.28.0

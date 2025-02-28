@@ -1,0 +1,146 @@
+# Warp-Inspired Terminal Enhancer - Detailed Instructions
+
+This document provides detailed instructions for setting up and using the Warp-Inspired Terminal Enhancer on Windows, macOS, and Linux.
+
+## 1. Prerequisites
+
+*   **Python 3.7+:** Make sure you have Python 3.7 or a newer version installed. You can check your Python version by running `python --version` or `python3 --version` in your terminal.
+*   **pip:** pip is the package installer for Python. It usually comes pre-installed with Python. You can check if you have it installed by running `pip --version` or `pip3 --version`.
+*   **Git:** Git is used to clone the repository. You can check if you have it installed by running `git --version`.
+*   **Ollama (optional):** If you want to use Ollama as your AI provider, you need to install it separately. See the "Installing Ollama" section below.
+
+## 2. Installation
+
+1.  **Clone the repository:**
+
+    Open your terminal (or Command Prompt/PowerShell on Windows) and run:
+
+    ```bash
+    git clone https://github.com/yourusername/warp-inspired-tool.git  # Replace with the actual repository URL
+    cd warp-inspired-tool
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+    or
+    ```bash
+    pip3 install -r requirements.txt
+    ```
+
+    This command installs the required Python packages listed in `requirements.txt`. These packages include `prompt_toolkit` (for the interactive command-line interface) and the AI provider libraries (e.g., `openai`, `anthropic-ai`).
+
+## 3. Setting up API Keys (Environment Variables)
+
+This application uses API keys for various AI providers. You need to set these keys as environment variables. The required environment variables are:
+
+*   `OPENAI_API_KEY`: For OpenAI
+*   `GROK_API_KEY`: For Grok
+*   `CLAUDE_API_KEY`: For Claude
+*   `OPENROUTER_API_KEY`: For OpenRouter
+
+You only need to set the API key for the provider you intend to use. You can choose the provider in `config.py`.  Ollama is optional and does not require an API key, but it does require a local installation.
+
+**Instructions for setting environment variables:**
+
+**Windows (Command Prompt):**
+
+```
+set OPENAI_API_KEY=your_openai_api_key
+```
+
+**Windows (PowerShell):**
+
+```powershell
+$env:OPENAI_API_KEY = "your_openai_api_key"
+```
+
+**macOS / Linux (bash/zsh):**
+
+```bash
+export OPENAI_API_KEY=your_openai_api_key
+```
+
+**Important:** Replace `your_openai_api_key` with your actual API key. You'll need to obtain these keys from the respective AI provider websites.
+
+**Making environment variables persistent:**
+
+The above commands set the environment variables only for the current terminal session. To make them persistent, you need to add them to your shell's configuration file.
+
+*   **Windows:** You can set environment variables permanently through the System Properties. Search for "environment variables" in the Start Menu and select "Edit the system environment variables". Click the "Environment Variables..." button. Under "User variables", click "New..." and add the variable name (e.g., `OPENAI_API_KEY`) and value.
+*   **macOS:** Edit the `.zshrc` file (or `.bash_profile` if you're using bash) in your home directory. Add the `export` commands (like the one above) to this file.
+*   **Linux:** Edit the `.bashrc` file (or `.zshrc` if you're using zsh) in your home directory. Add the `export` commands to this file.
+
+After editing the configuration file, either restart your terminal or run `source ~/.zshrc` (or `source ~/.bashrc` or `source ~/.bash_profile`) to apply the changes.
+
+## 4. Configuration (`config.py`)
+
+The `config.py` file contains settings for the application:
+
+*   `AI_PROVIDER`: This setting determines which AI provider to use. You can choose from `"ollama"`, `"openai"`, `"grok"`, `"claude"`, and `"openrouter"`.  Note that Ollama requires a local installation.
+*   `OLLAMA_MODEL`: Specifies the local Ollama model to use (if `AI_PROVIDER` is set to `"ollama"`).
+*   `OPENAI_MODEL`: Specifies the OpenAI model to use (if `AI_PROVIDER` is set to `"openai"`).
+*   `OPENROUTER_MODEL`:  Specifies the OpenRouter model.
+*   `CLAUDE_MODEL`: Specifies the default Claude model.
+
+Edit this file to change the settings according to your preferences.
+
+## 5. Running the Application
+
+Navigate to the `warp-inspired-tool` directory in your terminal:
+
+```bash
+cd warp-inspired-tool
+```
+
+Then, run the application:
+
+```bash
+python main.py
+```
+or
+```bash
+python3 main.py
+```
+
+## 6. Usage
+
+*   **Getting Command Suggestions:** Type a description of the command you want to execute (e.g., "list files in current directory") and press Enter. The application will use the selected AI provider to suggest a terminal command.
+*   **Chat Mode (OpenRouter only):** Type `chat` and press Enter to enter chat mode. This mode is only available when the `AI_PROVIDER` is set to `"openrouter"` in `config.py`.  In chat mode, type your message and press Enter to get a response from the AI model. Type `exit` to leave chat mode.
+*   **Exiting:** Type `exit` and press Enter to exit the application.
+
+## Installing Ollama (optional)
+
+If you want to use Ollama as your AI provider, you need to install it on your system.  Follow the instructions on the official Ollama website: [https://ollama.com/](https://ollama.com/)
+
+The installation process typically involves downloading a pre-built binary or using a package manager.
+
+**macOS (using Homebrew):**
+
+```bash
+brew install ollama
+```
+
+**Linux (using curl):**
+```
+curl https://ollama.com/install.sh | sh
+```
+
+**Windows:**
+Download and run the installer from the Ollama website.
+
+After installing Ollama, you'll need to pull a model (e.g., `llama3`):
+
+```bash
+ollama pull llama3
+```
+Then you can set `AI_PROVIDER` to `ollama` and `OLLAMA_MODEL` to `llama3` (or another model you have pulled) in `config.py`.
+
+## Troubleshooting
+
+*   **`ModuleNotFoundError`:** If you get a `ModuleNotFoundError`, make sure you have installed the required packages using `pip install -r requirements.txt`. If the missing module is `ollama`, and you don't intend to use Ollama, you can ignore this error or choose a different AI provider in `config.py`.
+*   **API Key Errors:** If you get an error related to authentication or API keys, double-check that you have set the environment variables correctly and that your API keys are valid.
+*   **Network Errors:** If you encounter network errors, ensure you have a stable internet connection. The application needs to connect to the AI provider's API (except when using Ollama locally).
+* **Ollama Errors:** If you are using Ollama and encounter errors, make sure Ollama is installed correctly and that you have pulled the specified model.
